@@ -1,0 +1,7 @@
+{
+  "name": "seguimientopagos",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
