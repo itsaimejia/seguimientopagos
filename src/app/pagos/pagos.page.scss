@@ -1,0 +1,116 @@
+h4 {
+    margin-top: 0;
+}
+
+ion-list {
+
+    margin: 0;
+    padding: 0;
+    padding-top: 20px;
+
+    h2 {
+        margin: 0;
+        color: var(--text-light);
+        font-size: 1rem;
+        padding: 0 20px 10px 20px;
+    }
+
+    ion-item {
+
+        padding: 13px 0px;
+        min-height: unset !important;
+        --inner-padding-end: 0px;
+        --inner-min-height: unset !important;
+        --padding-start: 0;
+        margin-bottom: 5px;
+        background: var(--white);
+        transition: all .5s;
+
+        box-shadow: 0 0 15px #ddd;
+
+
+        ion-row {
+            margin: 0 -5px;
+            width: 100%;
+
+            ion-col {
+                h3 {
+                    margin: 0;
+                    color: var(--text-black);
+                    font-size: .93rem;
+                    padding-bottom: 6px;
+                }
+
+                p {
+                    margin: 0;
+                    color: var(--text-light);
+                    font-size: .8rem;
+                    white-space: nowrap;
+                    font-weight: 400;
+                }
+            }
+        }
+
+        &.animate__animated.animate__fadeInRight {
+            &:nth-child(1) {
+                --animate-duration: .15s;
+            }
+
+            &:nth-child(2) {
+                --animate-duration: .2s;
+            }
+
+            &:nth-child(3) {
+                --animate-duration: .25s;
+            }
+
+            &:nth-child(4) {
+                --animate-duration: .3s;
+            }
+
+            &:nth-child(5) {
+                --animate-duration: .35s;
+            }
+
+            &:nth-child(6) {
+                --animate-duration: .4s;
+            }
+
+            &:nth-child(7) {
+                --animate-duration: .45s;
+            }
+
+            &:nth-child(8) {
+                --animate-duration: .5s;
+            }
+
+            &:nth-child(9) {
+                --animate-duration: .55s;
+            }
+
+            &:nth-child(10) {
+                --animate-duration: .6s;
+            }
+
+            &:nth-child(11) {
+                --animate-duration: .65s;
+            }
+
+            &:nth-child(12) {
+                --animate-duration: .7s;
+            }
+
+            &:nth-child(13) {
+                --animate-duration: .5s;
+            }
+
+            &:nth-child(14) {
+                --animate-duration: .5s;
+            }
+
+            &:nth-child(15) {
+                --animate-duration: .5s;
+            }
+        }
+    }
+}

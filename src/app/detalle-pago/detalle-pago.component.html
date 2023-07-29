@@ -1,0 +1,49 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{pago_completo? "Detalle": "Agregar"}} pago</ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="danger" (click)="cerrarModal()">{{pago_completo? "Regresar": "Cancelar"}}</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-item lines="none">
+    <ion-item class="ion-no-padding" lines="none" slot="start">
+      <ion-label position="stacked">Fecha renta</ion-label>
+      <h5>{{data_pago.fecha}}</h5>
+    </ion-item>
+    <ion-item *ngIf="!pago_completo" lines="none" slot="end">
+      <ion-label position="stacked">Fecha actual</ion-label>
+      <h5>{{fecha_actual}}</h5>
+    </ion-item>
+  </ion-item>
+  <ion-item class="ion-padding-bottom" lines="none">
+    <ion-label position="stacked">Nombre cliente</ion-label>
+    <h5>{{data_pago.cliente}}</h5>
+  </ion-item>
+  <ion-item lines="none">
+    <h5>Total</h5>
+    <h5 slot="end">${{data_pago.total}}</h5>
+  </ion-item>
+  <ion-item lines="none">
+    <h5>Pagado</h5>
+    <h5 slot="end">${{data_pago.pagado}}</h5>
+  </ion-item>
+  <ion-item lines="none">
+    <h5>Restante</h5>
+    <h5 slot="end">${{data_pago.restante}}</h5>
+  </ion-item>
+  <ion-button (click)="abrirModalHistorialPagos()" size="small" *ngIf="!pago_completo" class="ion-margin-top"
+    expand="full" color="warning">
+    <ion-icon slot="start" name="alert-circle"></ion-icon>
+    <ion-label>Ver historial pagos</ion-label>
+  </ion-button>
+  <ion-item *ngIf="!pago_completo" class="ion-padding-top">
+    <ion-input label="Ingresar pago" labelPlacement="stacked" placeholder="0.0"></ion-input>
+  </ion-item>
+  <ion-item class="ion-padding-top">
+    <ion-textarea readonly="{{pago_completo}}" label="Notas" labelPlacement="stacked"></ion-textarea>
+  </ion-item>
+  <ion-button *ngIf="!pago_completo" class="ion-margin-top" expand="full" color="success">Guardar Pago</ion-button>
+</ion-content>

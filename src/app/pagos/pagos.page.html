@@ -1,0 +1,68 @@
+<ion-header [translucent]="true" class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-button color="dark" (click)="abrirBuscador()">
+        <ion-icon name="search" size="large" color="light"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title *ngIf="!on_buscar">Pagos</ion-title>
+    <ion-searchbar *ngIf="on_buscar" show-clear-button="focus" mode="md" type="text"
+      placeholder="Ingresar nombre cliente"></ion-searchbar>
+  </ion-toolbar>
+
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-fab slot="fixed" vertical="bottom" horizontal="center">
+    <ion-fab-button color="success" size="small" (click)="modalNuevaRenta()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+  <ion-list lines="none">
+    <h4>Pendientes</h4>
+    <ion-item *ngFor="let p of pagosPendientes">
+      <ion-row (click)="seleccionarPago(p)">
+        <ion-col size="6">
+          <h3><strong>{{p.cliente}} </strong></h3>
+          <p>{{p.fecha}}</p>
+        </ion-col>
+        <ion-col size="2" class="ion-text-center">
+          <p>Total</p>
+          <ion-badge color="primary">${{p.total}}</ion-badge>
+        </ion-col>
+        <ion-col size="2" class="ion-text-center">
+          <p>Pagado</p>
+          <ion-badge color="success">${{p.pagado}}</ion-badge>
+        </ion-col>
+        <ion-col size="2" class="ion-text-center">
+          <p>Restante</p>
+          <ion-badge color="danger">${{p.restante}}</ion-badge>
+        </ion-col>
+      </ion-row>
+    </ion-item>
+  </ion-list>
+
+  <ion-list lines="none">
+    <h4>Completados</h4>
+    <ion-item *ngFor="let p of pagosCompletados">
+      <ion-row (click)="seleccionarPago(p)">
+        <ion-col size="6">
+          <h3><strong>{{p.cliente}} </strong></h3>
+          <p>{{p.fecha}}</p>
+        </ion-col>
+        <ion-col size="2" class="ion-text-center">
+          <p>Total</p>
+          <ion-badge color="primary">${{p.total}}</ion-badge>
+        </ion-col>
+        <ion-col size="2" class="ion-text-center">
+          <p>Pagado</p>
+          <ion-badge color="success">${{p.pagado}}</ion-badge>
+        </ion-col>
+        <ion-col size="2" class="ion-text-center">
+          <p>Restante</p>
+          <ion-badge color="danger">${{p.restante}}</ion-badge>
+        </ion-col>
+      </ion-row>
+    </ion-item>
+  </ion-list>
+</ion-content>

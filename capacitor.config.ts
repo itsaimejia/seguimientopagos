@@ -1,8 +1,8 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'seguimientopagos',
+  appId: 'com.donato.seguimientopagos',
+  appName: 'Seguimiento Pagos',
   webDir: 'www',
   server: {
     androidScheme: 'https'

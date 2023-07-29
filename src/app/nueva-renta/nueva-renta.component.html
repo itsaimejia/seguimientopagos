@@ -1,0 +1,48 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Nueva renta ({{fecha_actual}})</ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="danger" (click)="cerrarModal()">Cancelar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <ion-item class="ion-padding-top">
+    <ion-input label="Teléfono" labelPlacement="stacked" placeholder="Ingresar número de teléfono"></ion-input>
+    <ion-button (click)="onBuscar()" slot="end" fill="clear">
+      <ion-icon size="large" name="search-circle"></ion-icon>
+    </ion-button>
+  </ion-item>
+
+
+  <ion-item class="ion-padding-top">
+    <ion-input [disabled]="!buscado" label="Cliente" labelPlacement="stacked"
+      placeholder="Ingresar nombre del cliente"></ion-input>
+  </ion-item>
+
+  <ion-item lines="none" class="ion-padding-top">
+    <ion-title slot="start">Total renta</ion-title>
+    <ion-item slot="end">
+      <ion-input [disabled]="!buscado" class="ion-no-margin" placeholder="0.0"></ion-input>
+    </ion-item>
+  </ion-item>
+  <ion-item lines="none">
+    <ion-title slot="start">Adelanto</ion-title>
+    <ion-item slot="end">
+      <ion-input [disabled]="!buscado" class="ion-no-margin" placeholder="0.0"></ion-input>
+    </ion-item>
+  </ion-item>
+  <ion-item lines="none">
+    <ion-title slot="start">Restante</ion-title>
+    <ion-item slot="end" lines="none">
+      <ion-input [disabled]="!buscado" readonly="true" class="ion-no-margin" placeholder="0.0"></ion-input>
+    </ion-item>
+  </ion-item>
+
+  <ion-item class="ion-padding-top ">
+    <ion-textarea [disabled]="!buscado" color="success" label="Notas" labelPlacement="stacked"></ion-textarea>
+  </ion-item>
+  <ion-button [disabled]="!buscado" class="ion-margin-top" expand="full" color="success">Guardar renta</ion-button>
+</ion-content>
