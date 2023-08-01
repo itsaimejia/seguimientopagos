@@ -17,6 +17,9 @@
       <ion-label position="stacked">Fecha actual</ion-label>
       <h5>{{fecha_actual}}</h5>
     </ion-item>
+    <ion-button *ngIf="!pago_completo" slot="end" color="danger" class="ion-no-padding" (click)="mostrarOpciones()">
+      <ion-icon size="small" slot="icon-only" name="menu"></ion-icon>
+    </ion-button>
   </ion-item>
   <ion-item class="ion-padding-bottom" lines="none">
     <ion-label position="stacked">Nombre cliente</ion-label>
@@ -28,22 +31,23 @@
   </ion-item>
   <ion-item lines="none">
     <h5>Pagado</h5>
-    <h5 slot="end">${{data_pago.pagado}}</h5>
+    <h5 slot="end">${{pagado}}</h5>
   </ion-item>
   <ion-item lines="none">
     <h5>Restante</h5>
-    <h5 slot="end">${{data_pago.restante}}</h5>
+    <h5 slot="end">${{restante!}}</h5>
   </ion-item>
-  <ion-button (click)="abrirModalHistorialPagos()" size="small" *ngIf="!pago_completo" class="ion-margin-top"
-    expand="full" color="warning">
+  <ion-button (click)="abrirModalHistorialPagos()" size="small" class="ion-margin-top" expand="full" color="warning">
     <ion-icon slot="start" name="alert-circle"></ion-icon>
     <ion-label>Ver historial pagos</ion-label>
   </ion-button>
   <ion-item *ngIf="!pago_completo" class="ion-padding-top">
-    <ion-input label="Ingresar pago" labelPlacement="stacked" placeholder="0.0"></ion-input>
+    <ion-input label="Ingresar pago" labelPlacement="stacked" placeholder="0.0" [(ngModel)]="monto_pago"
+      (ionInput)="calcularRestante($event)"></ion-input>
   </ion-item>
   <ion-item class="ion-padding-top">
-    <ion-textarea readonly="{{pago_completo}}" label="Notas" labelPlacement="stacked"></ion-textarea>
+    <ion-textarea readonly="{{pago_completo}}" label="Notas" labelPlacement="stacked"
+      [(ngModel)]="notas"></ion-textarea>
   </ion-item>
   <ion-button *ngIf="!pago_completo" class="ion-margin-top" expand="full" color="success">Guardar Pago</ion-button>
 </ion-content>

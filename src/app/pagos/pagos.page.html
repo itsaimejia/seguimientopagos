@@ -12,57 +12,72 @@
 
 </ion-header>
 
-<ion-content class="ion-padding">
+<ion-content>
   <ion-fab slot="fixed" vertical="bottom" horizontal="center">
     <ion-fab-button color="success" size="small" (click)="modalNuevaRenta()">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
-  <ion-list lines="none">
-    <h4>Pendientes</h4>
-    <ion-item *ngFor="let p of pagosPendientes">
-      <ion-row (click)="seleccionarPago(p)">
-        <ion-col size="6">
-          <h3><strong>{{p.cliente}} </strong></h3>
-          <p>{{p.fecha}}</p>
-        </ion-col>
-        <ion-col size="2" class="ion-text-center">
-          <p>Total</p>
-          <ion-badge color="primary">${{p.total}}</ion-badge>
-        </ion-col>
-        <ion-col size="2" class="ion-text-center">
-          <p>Pagado</p>
-          <ion-badge color="success">${{p.pagado}}</ion-badge>
-        </ion-col>
-        <ion-col size="2" class="ion-text-center">
-          <p>Restante</p>
-          <ion-badge color="danger">${{p.restante}}</ion-badge>
-        </ion-col>
-      </ion-row>
-    </ion-item>
-  </ion-list>
 
-  <ion-list lines="none">
-    <h4>Completados</h4>
-    <ion-item *ngFor="let p of pagosCompletados">
-      <ion-row (click)="seleccionarPago(p)">
-        <ion-col size="6">
-          <h3><strong>{{p.cliente}} </strong></h3>
-          <p>{{p.fecha}}</p>
-        </ion-col>
-        <ion-col size="2" class="ion-text-center">
-          <p>Total</p>
-          <ion-badge color="primary">${{p.total}}</ion-badge>
-        </ion-col>
-        <ion-col size="2" class="ion-text-center">
-          <p>Pagado</p>
-          <ion-badge color="success">${{p.pagado}}</ion-badge>
-        </ion-col>
-        <ion-col size="2" class="ion-text-center">
-          <p>Restante</p>
-          <ion-badge color="danger">${{p.restante}}</ion-badge>
-        </ion-col>
-      </ion-row>
-    </ion-item>
-  </ion-list>
+  <ion-segment (ionChange)="cambiarLista($event)" value="pendientes">
+    <ion-segment-button value="pendientes">
+      <ion-label>Pendientes</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="completados">
+      <ion-label>Completados</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+  <ion-refresher slot="fixed" (ionRefresh)="actualizarPagos($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <div class="ion-padding" *ngIf="(lista === 'pendientes')">
+    <ion-list lines="none">
+      <ion-item *ngFor="let p of pagosPendientes">
+        <ion-row (click)="seleccionarPago(p)">
+          <ion-col size="6">
+            <h3><strong>{{p.cliente}} </strong></h3>
+            <p>{{p.fecha}}</p>
+          </ion-col>
+          <ion-col size="2" class="ion-text-center">
+            <p>Total</p>
+            <ion-badge color="primary">${{p.total}}</ion-badge>
+          </ion-col>
+          <ion-col size="2" class="ion-text-center">
+            <p>Pagado</p>
+            <ion-badge color="success">${{p.pagado}}</ion-badge>
+          </ion-col>
+          <ion-col size="2" class="ion-text-center">
+            <p>Restante</p>
+            <ion-badge color="danger">${{p.restante}}</ion-badge>
+          </ion-col>
+        </ion-row>
+      </ion-item>
+      <div class="footer-list"></div>
+    </ion-list>
+  </div>
+  <div class="ion-padding" *ngIf="(lista === 'completados')">
+    <ion-list lines="none">
+      <ion-item *ngFor="let p of pagosCompletados">
+        <ion-row (click)="seleccionarPago(p)">
+          <ion-col size="6">
+            <h3><strong>{{p.cliente}} </strong></h3>
+            <p>{{p.fecha}}</p>
+          </ion-col>
+          <ion-col size="2" class="ion-text-center">
+            <p>Total</p>
+            <ion-badge color="primary">${{p.total}}</ion-badge>
+          </ion-col>
+          <ion-col size="2" class="ion-text-center">
+            <p>Pagado</p>
+            <ion-badge color="success">${{p.pagado}}</ion-badge>
+          </ion-col>
+          <ion-col size="2" class="ion-text-center">
+            <p>Restante</p>
+            <ion-badge color="danger">${{p.restante}}</ion-badge>
+          </ion-col>
+        </ion-row>
+      </ion-item>
+      <div class="footer-list"></div>
+    </ion-list>
+  </div>
 </ion-content>

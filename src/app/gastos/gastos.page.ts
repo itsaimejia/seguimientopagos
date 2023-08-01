@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NuevoGastoComponent } from '../nuevo-gasto/nuevo-gasto.component';
+import { NuevoGastoComponent } from '../components/nuevo-gasto/nuevo-gasto.component';
 import { AlertController, ModalController } from '@ionic/angular';
 
 @Component({
@@ -53,6 +53,10 @@ export class GastosPage implements OnInit {
       buttons: ['Aceptar'],
     });
     await alert.present();
+  }
+
+  handleEliminar(g: any) {
+    
   }
 
 }

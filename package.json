@@ -34,6 +34,7 @@
     "@ionic/pwa-elements": "^3.2.2",
     "@maskito/angular": "^1.2.2",
     "@maskito/core": "^1.2.2",
+    "@types/uuid": "^9.0.2",
     "ionicons": "^7.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

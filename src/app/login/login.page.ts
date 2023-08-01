@@ -9,37 +9,34 @@ import { Preferences } from '@capacitor/preferences';
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage implements OnInit {
-  phone?: string
+  celular?: string
   constructor(private service: ServicesService,
     private navCtrl: NavController) { }
 
-  ngOnInit() {
-    this.phone = "asdasda"
-  }
-
+  ngOnInit() { }
   onLogin() {
-    if (!/^\d{10}$/.test(this.phone!)) {
+    if (!/^\d{10}$/.test(this.celular!)) {
       this.service.showAlert(
         'Atención',
         'Ingresa un número de teléfono a 10 dígitos'
       );
     } else {
       let data = {
-        collection: 'users',
-        method: 'getUserData',
-        phone: this.phone,
+        collection: 'usuarios',
+        action: 'obtenerUsuario',
+        celular: this.celular,
       };
 
       this.service.conFirestore(data, true)
         .then((response) => {
           if (response.result == 'success') {
-            this.guardarSesion(response.user).then(() => {
+            this.guardarSesion(response.usuario).then(() => {
               this.navCtrl.navigateForward([
                 '/tabs',
               ]);
             })
           } else {
-            this.service.showAlert('Atención', response.message);
+            this.service.showAlert('Atención', response.mensaje);
           }
         })
         .catch((e) => {
@@ -48,11 +45,11 @@ export class LoginPage implements OnInit {
     }
   }
 
-  async guardarSesion(user: any) {
+  async guardarSesion(usuario: any) {
     await Preferences.set({
       key: 'seguimientopagos-user-data',
       value: JSON.stringify({
-        user: user,
+        usuario: usuario,
       }),
     });
   }

@@ -16,6 +16,14 @@ const routes: Routes = [
         loadChildren: () => import('../gastos/gastos.module').then(m => m.GastosPageModule)
       },
       {
+        path: 'corte',
+        loadChildren: () => import('../corte/corte.module').then(m => m.CortePageModule)
+      },
+      {
+        path: 'perfil',
+        loadChildren: () => import('../perfil/perfil.module').then(m => m.PerfilPageModule)
+      },
+      {
         path: '',
         redirectTo: '/tabs/pagos',
         pathMatch: 'full'

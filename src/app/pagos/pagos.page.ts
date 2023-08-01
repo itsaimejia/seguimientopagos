@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController, ModalController } from '@ionic/angular';
-import { DetallePagoComponent } from '../detalle-pago/detalle-pago.component';
-import { NuevaRentaComponent } from '../nueva-renta/nueva-renta.component';
+import { DetallePagoComponent } from '../components/detalle-pago/detalle-pago.component';
+import { NuevaRentaComponent } from '../components/nueva-renta/nueva-renta.component';
+import { ServicesService } from 'src/services/services.service';
 
 @Component({
   selector: 'app-pagos',
@@ -10,32 +11,38 @@ import { NuevaRentaComponent } from '../nueva-renta/nueva-renta.component';
 })
 export class PagosPage implements OnInit {
 
-  pagosPendientes: any = [
-    {
-      fecha: '23/07/2023',
-      cliente: 'Pedro algo',
-      total: 4003,
-      pagado: 2002,
-      restante: 2002
-    },
-  ]
+  pagosPendientes: any = []
 
-  pagosCompletados: any = [
-    {
-      fecha: '23/07/2023',
-      cliente: 'Gonzalo algo',
-      total: 400,
-      pagado: 400,
-      restante: 0
-    },
-
-  ]
+  pagosCompletados: any = []
 
   on_buscar: boolean = false
+  lista: string = "pendientes"
 
-  constructor(public modalController: ModalController) { }
+  constructor(public modalController: ModalController,
+    private service: ServicesService) { }
 
-  ngOnInit() {
+  ngOnInit() { }
+
+  ionViewWillEnter() {
+    this.obtenerDatos()
+  }
+
+  obtenerDatos() {
+    let data = {
+      collection: 'pagos',
+      action: 'obtenerPagos',
+    };
+
+    this.service.conFirestore(data, true)
+      .then((response) => {
+        if (response.result == 'success') {
+          this.pagosPendientes = response.pagosPendientes
+          this.pagosCompletados = response.pagosCompletados
+        }
+      })
+      .catch((e) => {
+        this.service.showAlert('Error', e);
+      });
   }
 
   abrirBuscador() {
@@ -49,7 +56,6 @@ export class PagosPage implements OnInit {
         data_pago: p
       }
     });
-
     modal.present()
   }
 
@@ -57,11 +63,27 @@ export class PagosPage implements OnInit {
     const modal = await this.modalController.create({
       component: NuevaRentaComponent,
     });
-
     modal.present()
+    modal.onDidDismiss().then((data) => {
+      if (data.data != undefined) {
+        let pago = data.data.pago
+        if (pago.restante == 0) {
+          this.pagosCompletados.push(pago)
+        } else {
+          this.pagosPendientes.push(pago)
+        }
+      }
+    })
   }
 
+  cambiarLista(event: any) {
+    this.lista = event.detail.value
+  }
 
-
-
+  actualizarPagos(event: any) {
+    setTimeout(() => {
+      this.obtenerDatos()
+      event.target.complete();
+    }, 2000);
+  }
 }

@@ -1,8 +1,15 @@
 import { Injectable } from '@angular/core';
 import { AlertController, LoadingController, ToastController } from '@ionic/angular';
 import { SpinnerDialog } from '@awesome-cordova-plugins/spinner-dialog/ngx';
-import { UserService } from './user.service';
-import { ClientsService } from './clients.service';
+import { ClientesService } from './clientes/clientes.service';
+import { UsuariosService } from './usuarios/usuarios.service';
+import { PagosService } from './pagos/pagos.service';
+import { CortesService } from './cortes/cortes.service';
+import { HistorialPagosService } from './historial-pagos/historial-pagos.service';
+import { GastosService } from './gastos/gastos.service';
+
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -12,35 +19,42 @@ export class ServicesService {
     private loadingCtrl: LoadingController,
     private toastController: ToastController,
     private spinnerDialog: SpinnerDialog,
-    private userService: UserService,
-    private clientService: ClientsService) { }
+    private clientesService: ClientesService,
+    private usuariosService: UsuariosService,
+    private pagosService: PagosService,
+    private cortesService: CortesService,
+    private historialPagosService: HistorialPagosService,
+    private gastosService: GastosService
+  ) { }
 
   async conFirestore(data: any, loader: any): Promise<any> {
     let response: any = null
-
+    
     if (loader) {
       this.spinnerDialog.show()
     }
     try {
-      let collection: any = data.collection
-      switch (collection) {
-        case 'users':
-          let user: any = await this.userService.conUsers(data)
-          if (user.result == "success") {
-            response = { result: "success", user: user }
-          } else {
-            response = { result: "error", message: user.message }
-          }
+      switch (data.collection) {
+        case 'usuarios':
+          response = await this.usuariosService.conUsuarios(data)
           break
-        case 'pays':
+        case 'pagos':
+          response = await this.pagosService.conPagos(data)
           break
-        case 'bills':
+        case 'gastos':
+          response = await this.gastosService.conGastos(data)
           break
-        case 'clients':
-          response = { result: "success", client: await this.clientService.conClients(data) }
+        case 'clientes':
+          response = await this.clientesService.conClientes(data)
+          break
+        case 'historial-pagos':
+          response = await this.historialPagosService.conHistorialPagos(data)
+          break
+        case 'cortes':
+          response = await this.cortesService.conCortes(data)
           break
         default:
-          response = { result: "error", message: "No existe esa coleccion" }
+          response = { result: "error", message: "No existe la colección" }
           break
       }
     } catch (e) {

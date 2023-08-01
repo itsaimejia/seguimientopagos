@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+import { ServicesService } from 'src/services/services.service';
 
 @Component({
   selector: 'app-historial-pagos',
@@ -8,24 +9,18 @@ import { ModalController } from '@ionic/angular';
 })
 export class HistorialPagosComponent implements OnInit {
 
-  historialPagos: any = [
-    {
-      fecha: "10/12/2012",
-      responsable: "Donato",
-      monto: 200
-    },
-    {
-      fecha: "12/12/2012",
-      responsable: "Donato",
-      monto: 100
-    },
-  ]
+  idpago?: string
+  historialPagos?: any = []
   constructor(private modalController: ModalController) { }
 
   ngOnInit() { }
 
+  ionViewWillEnter() { }
+
   cerrarModal() {
     this.modalController.dismiss();
   }
+
+
 
 }
