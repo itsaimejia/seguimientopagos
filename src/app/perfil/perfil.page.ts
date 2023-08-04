@@ -14,6 +14,7 @@ export class PerfilPage implements OnInit {
   ionViewWillEnter() {
 
   }
+  
   ngOnInit() {
 
   }

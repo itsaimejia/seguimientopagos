@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActionSheetController, AlertController, AlertInput, ModalController } from '@ionic/angular';
-import { getFechaActual } from 'src/generales/generales';
+import { getFechaActual, validarCampo, validarCelular, validarPago } from 'src/generales/generales';
 import { HistorialPagosComponent } from '../historial-pagos/historial-pagos.component';
 import { ServicesService } from 'src/services/services.service';
 import { reduce } from 'rxjs';
+import { Preferences } from '@capacitor/preferences';
 
 @Component({
   selector: 'app-detalle-pago',
@@ -15,13 +16,13 @@ export class DetallePagoComponent implements OnInit {
   data_pago?: any
   pago_completo?: boolean
   fecha_actual?: string
-  monto_pago?: string
+  monto_pago?: number
   notas?: string
   pagado?: number
   restante?: number
   timeout: any
 
-
+  usuario?: any = []
   historialPagos?: any = []
   eliminar_cliente?: boolean = false
 
@@ -32,11 +33,16 @@ export class DetallePagoComponent implements OnInit {
 
   ngOnInit() { }
 
-  ionViewWillEnter() {
+  async ionViewWillEnter() {
+    const ret: any = await Preferences.get({ key: 'seguimientopagos-user-data' });
+    const res = JSON.parse(ret.value)
+    this.usuario = res.usuario
     this.obtenerHistorialPagos()
     this.pago_completo = this.restante == 0
     this.fecha_actual = getFechaActual()
     this.notas = this.data_pago.notas
+    this.restante = this.data_pago.restante
+
   }
 
   obtenerHistorialPagos() {
@@ -58,6 +64,60 @@ export class DetallePagoComponent implements OnInit {
       .catch((e) => {
         this.service.showAlert('Error', e);
       });
+  }
+
+  async handlerActualizarPago() {
+    let valido =
+      await validarCampo(this.monto_pago, 'el pago') && (await validarPago(this.monto_pago!, this.restante!, 'restante'))
+    if (valido) {
+      const alert = await this.alertCtrl.create({
+        header: 'Atención',
+        subHeader: '¿El monto ingresado es correcto?',
+        message: `Pagado: $${this.monto_pago}`,
+        buttons: [
+          {
+            text: 'No',
+            role: 'cancel',
+            handler: () => { },
+          },
+          {
+            text: 'Sí',
+            handler: () => {
+              this.actualizarPago()
+            },
+          },
+        ],
+      });
+      await alert.present();
+    }
+  }
+
+  actualizarPago() {
+    let data = {
+      collection: 'pagos',
+      action: 'actualizarPago',
+      pagado: Number(this.pagado ?? 0) + Number(this.monto_pago ?? 0),
+      monto_pago: this.monto_pago,
+      idpago: this.data_pago.idpago,
+      restante: this.restante,
+      notas: this.notas ?? '',
+      idusuario: this.usuario.idusuario,
+      responsable: this.usuario.nombre,
+    };
+    this.service.conFirestore(data, true)
+      .then((response) => {
+        if (response.result == 'success') {
+          this.service.showToast(response.mensaje);
+          this.modalController.dismiss({ pago: response.pago })
+        } else {
+          this.service.showAlert('Error 1', response.mensaje);
+        }
+      })
+      .catch((e) => {
+        console.log(e)
+        this.service.showAlert('Error 2', e);
+      });
+
   }
 
   async handlerEliminarHistorialPagos() {
@@ -167,7 +227,7 @@ export class DetallePagoComponent implements OnInit {
     this.service.conFirestore(data, true)
       .then((response) => {
         if (response.result == 'success') {
-          this.service.showAlert('Atención', response.mensaje);
+          this.service.showToast(response.mensaje);
           this.modalController.dismiss({ result: response.result });
         } else {
           this.service.showAlert('Error', response.mensaje);

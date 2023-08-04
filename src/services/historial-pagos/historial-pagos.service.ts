@@ -9,7 +9,6 @@ export class HistorialPagosService {
   constructor(private firestore: Firestore) { }
 
   conHistorialPagos(data: any) {
-
     let response: any = null
     let action = data.action;
     switch (action) {
@@ -44,6 +43,10 @@ export class HistorialPagosService {
       querySnapshot.forEach((doc: any) => {
         let hp = doc.data()
         hp["idhistorialpago"] = doc.id
+        hp["seconds"] = hp.fecha.seconds
+        let fecha = new Date(hp.fecha.seconds * 1000)
+        const format = (n: any) => n > 9 ? `${n}` : `0${n}`
+        hp.fecha = `${format(fecha.getDate())}/${format(fecha.getMonth() + 1)}/${fecha.getFullYear()}`
         historialPagos.push(hp)
       })
       response = {
@@ -82,6 +85,7 @@ export class HistorialPagosService {
 
   obtenerHistorialPago(data: any) { }
   actualizarHistorialPago(data: any) { }
+  
   async eliminarHistorialPago(data: any) {
     let response: any = null
     try {

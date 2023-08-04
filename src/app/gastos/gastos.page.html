@@ -13,8 +13,11 @@
   </ion-fab>
   <ion-list lines="none">
     <ion-item-sliding *ngFor="let g of gastosRealizados">
-      <ion-item-options side="start" class="ion-padding">
+      <ion-item-options side="start" class="ion-padding-top ion-padding-bottom">
         <ion-item-option (click)="handleEliminar(g)" color="danger">Eliminar</ion-item-option>
+      </ion-item-options>
+      <ion-item-options side="end" class="ion-padding-top ion-padding-bottom">
+        <ion-item-option (click)="handleEditar(g)" color="primary">Editar</ion-item-option>
       </ion-item-options>
       <ion-item>
         <ion-row>

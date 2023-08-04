@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Preferences } from '@capacitor/preferences';
 import { AlertController, ModalController, NavController } from '@ionic/angular';
-import { getFechaActual } from 'src/generales/generales';
+import { getFechaActual, validarCampo, validarCelular, validarPago } from 'src/generales/generales';
 import { ServicesService } from 'src/services/services.service';
 import * as uuid from 'uuid';
 
@@ -11,7 +11,6 @@ import * as uuid from 'uuid';
   styleUrls: ['./nueva-renta.component.scss'],
 })
 export class NuevaRentaComponent implements OnInit {
-
   buscado?: boolean = false
   fecha_actual?: string
   celular?: string
@@ -24,10 +23,10 @@ export class NuevaRentaComponent implements OnInit {
   usuario?: any = []
   cliente_nuevo?: boolean = true
   timeout: any
+
   constructor(private modalController: ModalController,
     private service: ServicesService,
-    private alertCtrl: AlertController,
-    private navCtrl: NavController) { }
+    private alertCtrl: AlertController) { }
 
   async ngOnInit() {
     const ret: any = await Preferences.get({ key: 'seguimientopagos-user-data' });
@@ -37,8 +36,8 @@ export class NuevaRentaComponent implements OnInit {
     this.idpago = uuid.v4()
   }
 
-  onBuscar() {
-    if (this.validarCelular(this.celular)) {
+  async onBuscar() {
+    if (await validarCelular(this.celular)) {
       let data = {
         collection: 'clientes',
         action: 'obtenerCliente',
@@ -60,10 +59,10 @@ export class NuevaRentaComponent implements OnInit {
   }
 
   async handlerAgregarRenta() {
-    let valido = this.validarCampo(this.nombre, 'el nombre del cliente') &&
-      this.validarCampo(this.total, 'el total') &&
-      this.validarCampo(this.pagado, 'el pago') && this.validarPago(this.pagado!, this.total!) &&
-      this.validarCelular(this.celular)
+    let valido = await validarCampo(this.nombre, 'el nombre del cliente') &&
+      await validarCampo(this.total, 'el total') &&
+      await validarCampo(this.pagado, 'el pago') && await validarPago(this.pagado!, this.total!, 'total') &&
+      validarCelular(this.celular)
     if (valido) {
       const alert = await this.alertCtrl.create({
         header: 'Atención',
@@ -105,7 +104,7 @@ export class NuevaRentaComponent implements OnInit {
     this.service.conFirestore(data, true)
       .then((response) => {
         if (response.result == 'success') {
-          this.service.showAlert('Atención', response.mensaje);
+          this.service.showToast(response.mensaje);
           this.modalController.dismiss({ pago: response.pago })
         } else {
           this.service.showAlert('Error', response.mensaje);
@@ -115,40 +114,6 @@ export class NuevaRentaComponent implements OnInit {
         this.service.showAlert('Error', e);
       });
 
-  }
-
-  validarCampo(str: any, titulo: any) {
-    str = str == undefined ? '' : str
-    let res = str.trim().length > 0;
-    if (!res) {
-      this.service.showAlert(
-        'Atención',
-        `Ingresa ${titulo}`
-      );
-    }
-    return res;
-  }
-
-  validarPago(pagado: number, total: number) {
-    let res = Number(pagado ?? 0) <= Number(total ?? 0)
-    if (!res) {
-      this.service.showAlert(
-        'Atención',
-        'El valor del pago no puede superar el total'
-      );
-    }
-    return res
-  }
-
-  validarCelular(celular: any) {
-    let res = /^\d{10}$/.test(celular!)
-    if (!res) {
-      this.service.showAlert(
-        'Atención',
-        'Ingresa un número de teléfono a 10 dígitos'
-      );
-    }
-    return res
   }
 
   calcularRestante(event: any) {

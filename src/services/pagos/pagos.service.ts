@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, docData, doc, addDoc, collection, updateDoc, getDocs, where, query, writeBatch, orderBy, serverTimestamp } from '@angular/fire/firestore';
+import { Firestore, docData, doc, addDoc, collection, updateDoc, getDocs, where, query, writeBatch, orderBy, serverTimestamp, getDoc } from '@angular/fire/firestore';
 import * as uuid from 'uuid';
 
 @Injectable({
@@ -26,7 +26,7 @@ export class PagosService {
         response = this.eliminarPago(data)
         break
       default:
-        response = { result: "error", message: "No existe esta acción" }
+        response = { result: "error", mensaje: "No existe esta acción" }
         break
     }
     return response
@@ -45,7 +45,8 @@ export class PagosService {
         p["idpago"] = doc.id
         p["seconds"] = p.fecha.seconds
         let fecha = new Date(p.fecha.seconds * 1000)
-        p.fecha = `${fecha.getDate()}/${fecha.getMonth()}/${fecha.getFullYear()}`
+        const format = (n: any) => n > 9 ? `${n}` : `0${n}`
+        p.fecha = `${format(fecha.getDate())}/${format(fecha.getMonth() + 1)}/${fecha.getFullYear()}`
         if (p.restante == 0) {
           pagosCompletados.push(p)
         } else {
@@ -83,6 +84,7 @@ export class PagosService {
       return response
     }
   }
+
   async obtenerPago(data: any) { }
 
   async agregarPago(data: any) {
@@ -122,7 +124,7 @@ export class PagosService {
         idcorte: ''
       });
       await batch.commit().then(() => {
-        response = { result: "success", mensaje: "Renta agregada correctamente", pago: pago }
+        response = { result: "success", mensaje: "Renta agregada.", pago: this.pagoFormat(pago) }
       }).catch((e) => {
         response = { result: "error", mensaje: `Ocurrió un error: ${e}` }
       })
@@ -147,15 +149,17 @@ export class PagosService {
       const idhistorial = uuid.v4()
       const historialPagoRef = doc(this.firestore, 'historial-pagos', idhistorial);
       batch.set(historialPagoRef, {
-        fecha: data.fecha,
+        fecha: serverTimestamp(),
         idpago: data.idpago,
         idusuario: data.idusuario,
-        monto: data.pagado,
+        monto: data.monto_pago,
         responsable: data.responsable,
         idcorte: ''
       });
-      await batch.commit().then(() => {
-        response = { result: "success", mensaje: "Renta agregada correctamente" }
+      await batch.commit().then(async () => {
+        let pago: any = (await getDoc(doc(this.firestore, this.collection, data.idpago))).data()
+        pago["idpago"] = data.idpago
+        response = { result: "success", mensaje: "Pago agregado.", pago: this.pagoFormat(pago) }
       }).catch((e) => {
         response = { result: "error", mensaje: `Ocurrió un error: ${e}` }
       })
@@ -204,7 +208,7 @@ export class PagosService {
       batch.delete(pagoRef);
 
       await batch.commit().then(() => {
-        response = { result: "success", mensaje: "Pago eliminado correctamente" }
+        response = { result: "success", mensaje: "Pago eliminado." }
       }).catch((e) => {
         response = { result: "error", mensaje: `Ocurrió un error: ${e}` }
       })
@@ -213,5 +217,12 @@ export class PagosService {
     } finally {
       return response
     }
+  }
+
+  pagoFormat(pago: any) {
+    let fecha = new Date()
+    const format = (n: any) => n > 9 ? `${n}` : `0${n}`
+    pago.fecha = `${format(fecha.getDate())}/${format(fecha.getMonth() + 1)}/${fecha.getFullYear()}`
+    return pago
   }
 }

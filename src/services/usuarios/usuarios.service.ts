@@ -10,7 +10,6 @@ export class UsuariosService {
   constructor(private firestore: Firestore) { }
 
   conUsuarios(data: any) {
-
     let response: any = null
     try {
       let action = data.action;

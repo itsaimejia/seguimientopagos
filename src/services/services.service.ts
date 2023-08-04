@@ -14,22 +14,21 @@ import { GastosService } from './gastos/gastos.service';
   providedIn: 'root'
 })
 export class ServicesService {
-
   constructor(private alertCtrl: AlertController,
     private loadingCtrl: LoadingController,
-    private toastController: ToastController,
     private spinnerDialog: SpinnerDialog,
     private clientesService: ClientesService,
     private usuariosService: UsuariosService,
     private pagosService: PagosService,
     private cortesService: CortesService,
     private historialPagosService: HistorialPagosService,
-    private gastosService: GastosService
+    private gastosService: GastosService,
+    private toastCtrl: ToastController
   ) { }
 
   async conFirestore(data: any, loader: any): Promise<any> {
     let response: any = null
-    
+
     if (loader) {
       this.spinnerDialog.show()
     }
@@ -74,5 +73,15 @@ export class ServicesService {
       buttons: ['OK'],
     });
     await alert.present();
+  }
+
+  async showToast(mensaje: string) {
+    const toast = await this.toastCtrl.create({
+      message: mensaje,
+      duration: 1000,
+      color: 'dark',
+      position: 'top',
+    });
+    toast.present();
   }
 }

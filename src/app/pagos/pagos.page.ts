@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { AlertController, ModalController } from '@ionic/angular';
 import { DetallePagoComponent } from '../components/detalle-pago/detalle-pago.component';
 import { NuevaRentaComponent } from '../components/nueva-renta/nueva-renta.component';
@@ -11,6 +11,8 @@ import { ServicesService } from 'src/services/services.service';
 })
 export class PagosPage implements OnInit {
 
+  @ViewChild('swiper') swiperRef: ElementRef | undefined;
+  segment?: string = "pendientes"
   pagosPendientes: any = []
 
   pagosCompletados: any = []
@@ -26,6 +28,7 @@ export class PagosPage implements OnInit {
   ionViewWillEnter() {
     this.obtenerDatos()
   }
+
 
   obtenerDatos() {
     let data = {
@@ -49,14 +52,29 @@ export class PagosPage implements OnInit {
     this.on_buscar = !this.on_buscar;
   }
 
-  async seleccionarPago(p: any) {
+  async seleccionarPago(p: any, i: any, lista: any) {
     const modal = await this.modalController.create({
       component: DetallePagoComponent,
       componentProps: {
-        data_pago: p
+        data_pago: p,
       }
     });
     modal.present()
+    modal.onDidDismiss().then((data) => {
+      if (data.data != undefined) {
+        let pago = data.data.pago
+        if (pago.restante == 0) {
+          if (lista == 'pendientes') {
+            this.pagosPendientes.splice(i, 1)
+            this.pagosCompletados.push(pago)
+          } else {
+            this.pagosCompletados.splice(i, 1, pago);
+          }
+        } else {
+          this.pagosPendientes.splice(i, 1, pago);
+        }
+      }
+    })
   }
 
   async modalNuevaRenta() {
@@ -76,8 +94,14 @@ export class PagosPage implements OnInit {
     })
   }
 
-  cambiarLista(event: any) {
-    this.lista = event.detail.value
+  cambiarListaSwiper() {
+    let index = this.swiperRef?.nativeElement.swiper.activeIndex
+    this.segment = index == 1 ? "completados" : index == 0 ? "pendientes" : ""
+  }
+
+  cambiarListaSegment(event: any) {
+    let otherIndex = event.detail.value == "pendientes" ? 0 : "completados" ? 1 : 0
+    this.swiperRef?.nativeElement.swiper.slideTo(otherIndex, 500, false)
   }
 
   actualizarPagos(event: any) {

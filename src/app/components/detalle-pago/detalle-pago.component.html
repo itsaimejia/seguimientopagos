@@ -49,5 +49,6 @@
     <ion-textarea readonly="{{pago_completo}}" label="Notas" labelPlacement="stacked"
       [(ngModel)]="notas"></ion-textarea>
   </ion-item>
-  <ion-button *ngIf="!pago_completo" class="ion-margin-top" expand="full" color="success">Guardar Pago</ion-button>
+  <ion-button *ngIf="!pago_completo" class="ion-margin-top" expand="full" color="success"
+    (click)="handlerActualizarPago()">Guardar Pago</ion-button>
 </ion-content>

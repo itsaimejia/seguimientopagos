@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NuevoGastoComponent } from '../components/nuevo-gasto/nuevo-gasto.component';
 import { AlertController, ModalController } from '@ionic/angular';
+import { ServicesService } from 'src/services/services.service';
 
 @Component({
   selector: 'app-gastos',
@@ -9,43 +10,45 @@ import { AlertController, ModalController } from '@ionic/angular';
 })
 export class GastosPage implements OnInit {
 
-  gastosRealizados = [
-    {
-      responsable: "Donato",
-      fecha: "10/02/2022",
-      monto: 200,
-      descripcion: "se compro una capibara"
-    },
-    {
-      responsable: "Donato",
-      fecha: "10/02/2022",
-      monto: 300,
-      descripcion: "se compro una capibara"
-    },
-    {
-      responsable: "Donato",
-      fecha: "10/02/2022",
-      monto: 400,
-      descripcion: "se compro una capibara"
-    },
-
-
-  ]
+  gastosRealizados: any = []
 
   constructor(private modalController: ModalController,
-    private alertCtrl: AlertController) { }
+    private alertCtrl: AlertController,
+    private service: ServicesService) { }
 
   ngOnInit() {
+    this.obtenerDatos()
   }
 
+  obtenerDatos() {
+    let data = {
+      collection: 'gastos',
+      action: 'obtenerGastos',
+    };
+
+    this.service.conFirestore(data, true)
+      .then((response) => {
+        if (response.result == 'success') {
+          this.gastosRealizados = response.gastosRealizados
+        }
+      })
+      .catch((e) => {
+        this.service.showAlert('Error', e);
+      });
+  }
   async modalNuevoGasto() {
     const modal = await this.modalController.create({
       component: NuevoGastoComponent,
     });
 
     modal.present()
+    modal.onDidDismiss().then((data) => {
+      if (data.data != undefined) {
+        let gasto = data.data.gasto
+        this.gastosRealizados.push(gasto)
+      }
+    })
   }
-
   async mostrarDescripcion(d: any) {
     const alert = await this.alertCtrl.create({
       header: "Descripción",
@@ -56,7 +59,11 @@ export class GastosPage implements OnInit {
   }
 
   handleEliminar(g: any) {
-    
+    console.log(g)
+  }
+
+  handleEditar(g: any) {
+    console.log(g)
   }
 
 }
