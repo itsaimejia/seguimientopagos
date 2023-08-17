@@ -25,7 +25,6 @@ export class GastosPage implements OnInit {
       collection: 'gastos',
       action: 'obtenerGastos',
     };
-
     this.service.conFirestore(data, true)
       .then((response) => {
         if (response.result == 'success') {
@@ -45,7 +44,7 @@ export class GastosPage implements OnInit {
     modal.onDidDismiss().then((data) => {
       if (data.data != undefined) {
         let gasto = data.data.gasto
-        this.gastosRealizados.push(gasto)
+        this.gastosRealizados.unshift(gasto)
       }
     })
   }
@@ -64,6 +63,13 @@ export class GastosPage implements OnInit {
 
   handleEditar(g: any) {
     console.log(g)
+  }
+
+  actualizarGastos(event: any) {
+    setTimeout(() => {
+      this.obtenerDatos()
+      event.target.complete();
+    }, 2000);
   }
 
 }

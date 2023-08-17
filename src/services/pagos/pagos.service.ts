@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Firestore, docData, doc, addDoc, collection, updateDoc, getDocs, where, query, writeBatch, orderBy, serverTimestamp, getDoc } from '@angular/fire/firestore';
+import { porFechasAntiguas } from 'src/generales/generales';
 import * as uuid from 'uuid';
 
 @Injectable({
@@ -53,26 +54,8 @@ export class PagosService {
           pagosPendientes.push(p)
         }
       })
-      pagosCompletados.sort((a: any, b: any) => {
-        if (a.seconds > b.seconds) {
-          return 1;
-        }
-        if (a.seconds < b.seconds) {
-          return -1;
-        }
-        return 0
-      })
-
-      pagosPendientes.sort((a: any, b: any) => {
-        if (a.seconds > b.seconds) {
-          return 1;
-        }
-        if (a.seconds < b.seconds) {
-          return -1;
-        }
-        return 0
-      })
-
+      pagosCompletados.sort(porFechasAntiguas)
+      pagosPendientes.sort(porFechasAntiguas)
       response = {
         result: "success",
         pagosCompletados: pagosCompletados,
@@ -195,7 +178,7 @@ export class PagosService {
       const batch = writeBatch(this.firestore);
 
       data.historialPagos.forEach((hp: any) => {
-        const historialPagoRef = doc(this.firestore, 'historial-pagos', hp.idhistorial);
+        const historialPagoRef = doc(this.firestore, 'historial-pagos', hp.idhistorialpago);
         batch.delete(historialPagoRef);
       });
 
@@ -208,12 +191,12 @@ export class PagosService {
       batch.delete(pagoRef);
 
       await batch.commit().then(() => {
-        response = { result: "success", mensaje: "Pago eliminado." }
+        response = { result: "success", mensaje: "Pago eliminado.", idpago: data.idpago }
       }).catch((e) => {
-        response = { result: "error", mensaje: `Ocurrió un error: ${e}` }
+        response = { result: "error1", mensaje: `Ocurrió un error: ${e}` }
       })
     } catch (e) {
-      response = { result: "error", mensaje: e }
+      response = { result: "error2", mensaje: e }
     } finally {
       return response
     }

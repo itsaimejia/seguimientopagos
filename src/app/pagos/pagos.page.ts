@@ -62,16 +62,21 @@ export class PagosPage implements OnInit {
     modal.present()
     modal.onDidDismiss().then((data) => {
       if (data.data != undefined) {
-        let pago = data.data.pago
-        if (pago.restante == 0) {
-          if (lista == 'pendientes') {
-            this.pagosPendientes.splice(i, 1)
-            this.pagosCompletados.push(pago)
+        let accion = data.data.accion
+        if(accion === 'actualizar'){
+          let pago = data.data.pago
+          if (pago.restante == 0) {
+            if (lista == 'pendientes') {
+              this.pagosPendientes.splice(i, 1)
+              this.pagosCompletados.push(pago)
+            } else {
+              this.pagosCompletados.splice(i, 1, pago);
+            }
           } else {
-            this.pagosCompletados.splice(i, 1, pago);
+            this.pagosPendientes.splice(i, 1, pago);
           }
-        } else {
-          this.pagosPendientes.splice(i, 1, pago);
+        }else if(accion === 'eliminar'){
+          this.pagosPendientes.splice(i, 1)
         }
       }
     })

@@ -2,15 +2,21 @@
   <ion-toolbar>
     <ion-title>Gastos</ion-title>
   </ion-toolbar>
-
 </ion-header>
 
 <ion-content class="ion-padding">
+  <h3>Gastos realizados</h3>
   <ion-fab slot="fixed" vertical="bottom" horizontal="center">
     <ion-fab-button color="success" size="small" (click)="modalNuevoGasto()">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
+  <ion-refresher slot="fixed" (ionRefresh)="actualizarGastos($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <p class="ion-text-center" style="margin-top: 50px; color:red;" *ngIf="gastosRealizados.length===0 ">
+    No se encontraron gastos
+  </p>
   <ion-list lines="none">
     <ion-item-sliding *ngFor="let g of gastosRealizados">
       <ion-item-options side="start" class="ion-padding-top ion-padding-bottom">
@@ -38,10 +44,5 @@
         </ion-row>
       </ion-item>
     </ion-item-sliding>
-
   </ion-list>
-
-
-
-
 </ion-content>

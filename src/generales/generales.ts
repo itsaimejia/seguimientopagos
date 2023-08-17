@@ -53,3 +53,23 @@ export const validarPago = async (pagado: number, total: number, concepto: any) 
     }
     return res
 }
+
+export const porFechasRecientes = (a: any, b: any) => {
+    if (a.seconds > b.seconds) {
+        return -1;
+    }
+    if (a.seconds < b.seconds) {
+        return 1;
+    }
+    return 0
+}
+
+export const porFechasAntiguas = (a: any, b: any) => {
+    if (a.seconds > b.seconds) {
+        return 1;
+    }
+    if (a.seconds < b.seconds) {
+        return -1;
+    }
+    return 0
+}

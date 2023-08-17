@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Firestore, addDoc, collection, getDocs, query, serverTimestamp, where, writeBatch } from '@angular/fire/firestore';
+import { porFechasRecientes } from 'src/generales/generales';
 
 @Injectable({
   providedIn: 'root'
@@ -49,15 +50,7 @@ export class GastosService {
         p.fecha = `${format(fecha.getDate())}/${format(fecha.getMonth() + 1)}/${fecha.getFullYear()}`
         gastosRealizados.push(p)
       })
-      gastosRealizados.sort((a: any, b: any) => {
-        if (a.seconds > b.seconds) {
-          return 1;
-        }
-        if (a.seconds < b.seconds) {
-          return -1;
-        }
-        return 0
-      })
+      gastosRealizados.sort(porFechasRecientes)
       response = {
         result: "success",
         gastosRealizados: gastosRealizados,

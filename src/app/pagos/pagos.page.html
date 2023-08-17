@@ -9,7 +9,6 @@
     <ion-searchbar *ngIf="on_buscar" show-clear-button="focus" mode="md" type="text"
       placeholder="Ingresar nombre cliente"></ion-searchbar>
   </ion-toolbar>
-
 </ion-header>
 
 <ion-content>
@@ -23,7 +22,7 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <ion-segment (ionChange)="cambiarListaSegment($event)" [(ngModel)]="segment">
+  <ion-segment slot="fixed" (ionChange)="cambiarListaSegment($event)" [(ngModel)]="segment">
     <ion-segment-button value="pendientes">
       <ion-label>Pendientes</ion-label>
     </ion-segment-button>
@@ -34,6 +33,9 @@
 
   <swiper-container (slidechange)="cambiarListaSwiper()" #swiper>
     <swiper-slide>
+      <p class="ion-text-center" style="margin-top: 50px; color:red;" *ngIf="pagosPendientes.length===0 ">
+        No se encontraron pagos pendientes
+      </p>
       <div class="ion-padding">
         <ion-list lines="none">
           <ion-item *ngFor="let p of pagosPendientes; let i = index">
@@ -62,6 +64,9 @@
     </swiper-slide>
 
     <swiper-slide>
+      <p class="ion-text-center" style="margin-top: 50px; color:red;" *ngIf="pagosCompletados.length===0 ">
+        No se encontraron pagos completados
+      </p>
       <div class="ion-padding">
         <ion-list lines="none">
           <ion-item *ngFor="let p of pagosCompletados; let i = index">

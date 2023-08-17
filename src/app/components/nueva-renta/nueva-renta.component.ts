@@ -48,6 +48,8 @@ export class NuevaRentaComponent implements OnInit {
           if (response.result == 'success') {
             this.nombre = response.cliente.nombre
             this.cliente_nuevo = false
+          } else {
+            this.service.showToast('Nuevo cliente.')
           }
         })
         .catch((e) => {

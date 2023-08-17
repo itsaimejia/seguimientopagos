@@ -20,6 +20,7 @@ export class DetallePagoComponent implements OnInit {
   notas?: string
   pagado?: number
   restante?: number
+  restante_mostrar?: number
   timeout: any
 
   usuario?: any = []
@@ -43,6 +44,7 @@ export class DetallePagoComponent implements OnInit {
     this.notas = this.data_pago.notas
     this.restante = this.data_pago.restante
 
+
   }
 
   obtenerHistorialPagos() {
@@ -59,6 +61,7 @@ export class DetallePagoComponent implements OnInit {
           const sumPagado = this.historialPagos.map((hp: any) => Number(hp.monto)).reduce((a: number, b: number) => a + b)
           this.pagado = sumPagado
           this.restante = Number(this.data_pago.total) - Number(this.pagado ?? 0)
+          this.restante_mostrar = this.restante
         }
       })
       .catch((e) => {
@@ -99,7 +102,7 @@ export class DetallePagoComponent implements OnInit {
       pagado: Number(this.pagado ?? 0) + Number(this.monto_pago ?? 0),
       monto_pago: this.monto_pago,
       idpago: this.data_pago.idpago,
-      restante: this.restante,
+      restante: this.restante_mostrar,
       notas: this.notas ?? '',
       idusuario: this.usuario.idusuario,
       responsable: this.usuario.nombre,
@@ -108,7 +111,7 @@ export class DetallePagoComponent implements OnInit {
       .then((response) => {
         if (response.result == 'success') {
           this.service.showToast(response.mensaje);
-          this.modalController.dismiss({ pago: response.pago })
+          this.modalController.dismiss({ accion: 'actualizar', pago: response.pago })
         } else {
           this.service.showAlert('Error 1', response.mensaje);
         }
@@ -224,17 +227,19 @@ export class DetallePagoComponent implements OnInit {
       idpago: this.data_pago.idpago,
       eliminar_cliente: this.eliminar_cliente,
     };
+
+    console.log(data)
     this.service.conFirestore(data, true)
       .then((response) => {
         if (response.result == 'success') {
           this.service.showToast(response.mensaje);
-          this.modalController.dismiss({ result: response.result });
+          this.modalController.dismiss({ accion: 'eliminar', idpago: response.idpago });
         } else {
-          this.service.showAlert('Error', response.mensaje);
+          this.service.showAlert('Error 1', response.mensaje);
         }
       })
       .catch((e) => {
-        this.service.showAlert('Error', e);
+        this.service.showAlert('Error 2', e);
       });
   }
 
@@ -243,7 +248,7 @@ export class DetallePagoComponent implements OnInit {
       clearTimeout(this.timeout);
     }
     this.timeout = setTimeout(() => {
-      this.restante = Number(this.data_pago.total) - Number(this.pagado) - Number(this.monto_pago ?? 0)
+      this.restante_mostrar = Number(this.data_pago.total) - Number(this.pagado) - Number(this.monto_pago ?? 0)
     }, 500);
   }
 

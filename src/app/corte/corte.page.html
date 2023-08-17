@@ -1,13 +1,125 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>corte</ion-title>
+    <ion-title>Cortes</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">corte</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="actualizarCorteActual($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <ion-segment slot="fixed" (ionChange)="cambiarListaSegment($event)" [(ngModel)]="segment">
+    <ion-segment-button value="actual">
+      <ion-label>Actual</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="anteriores">
+      <ion-label>Anteriores</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+  <swiper-container (slidechange)="cambiarListaSwiper()" #swiper>
+    <swiper-slide>
+      <div class="ion-padding">
+        <ion-row class="ion-text-center">
+          <ion-col size="6">
+            <h4>Fecha inicio</h4>
+            <h5>{{fecha_inicio}}</h5>
+          </ion-col>
+          <ion-col size="6">
+            <h4>Fecha final</h4>
+            <h5>{{fecha_fin}}</h5>
+          </ion-col>
+        </ion-row>
+        <hr class="solid">
+        <ion-item lines="none">
+          <h5>Ingresos</h5>
+          <h5 slot="end">${{ingresos}}</h5>
+        </ion-item>
+        <ion-item lines="none">
+          <h5>Egresos</h5>
+          <h5 slot="end">${{egresos}}</h5>
+        </ion-item>
+        <ion-item lines="none">
+          <h5>Balance</h5>
+          <h5 slot="end">${{balance}}</h5>
+        </ion-item>
+        <ion-button (click)="abrirDesgloseModal()" size="small" class="ion-margin-top" expand="full" color="warning">
+          <ion-icon slot="start" name="alert-circle"></ion-icon>
+          <ion-label>Ver desglose completo</ion-label>
+        </ion-button>
+        <hr class="solid">
+        <h3>Desglose por usuario</h3>
+        <ion-list lines="none">
+          <ion-item *ngFor="let m of montosPorUsuarios; let i = index">
+            <ion-grid>
+              <ion-row>
+                <ion-col size="12">
+                  <h3><strong>{{m.usuario}} </strong></h3>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="4" class="ion-text-center">
+                  <p>Pagos</p>
+                  <ion-badge color="primary">${{m.pagos}}</ion-badge>
+                </ion-col>
+                <ion-col size="4" class="ion-text-center">
+                  <p>Gastos</p>
+                  <ion-badge color="success">${{m.gastos}}</ion-badge>
+                </ion-col>
+                <ion-col size="4" class="ion-text-center">
+                  <p>Restante</p>
+                  <ion-badge color="danger">${{m.restante}}</ion-badge>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-item>
+        </ion-list>
+        <hr class="solid">
+        <h3>Ganancias por porcentaje</h3>
+        <ion-item lines="none" *ngFor="let u of usuariosPorcentajes; let i = index">
+          <h5>{{u.titulo}}</h5>
+          <h5 slot="end">${{u.porcentaje}}</h5>
+        </ion-item>
+        <hr class="solid">
+        <h3>Ganancias finales</h3>
+        <ion-item lines="none" *ngFor="let g of gananciasFinales; let i = index">
+          <h5>{{g.nombre}}</h5>
+          <h4 slot="end">${{g.ganancia}}</h4>
+        </ion-item>
+      </div>
+    </swiper-slide>
+
+    <swiper-slide>
+      <div class="ion-padding">
+        <p class="ion-text-center" style="margin-top: 50px; color:red;" *ngIf="cortesRealizados.length===0 ">
+          No se encontraron cortes
+        </p>
+        <ion-list lines="none">
+          <ion-item *ngFor="let c of cortesRealizados; let i = index">
+            <ion-grid (click)="seleccionarCorte(c, i)">
+              <ion-row>
+                <ion-col size="12">
+                  <h3><strong>{{c.fecha_inicio}} - {{c.fecha_fin}} </strong></h3>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="4" class="ion-text-center">
+                  <p>Ingresos</p>
+                  <ion-badge color="primary">${{c.ingresos}}</ion-badge>
+                </ion-col>
+                <ion-col size="4" class="ion-text-center">
+                  <p>Egresos</p>
+                  <ion-badge color="success">${{c.egresos}}</ion-badge>
+                </ion-col>
+                <ion-col size="4" class="ion-text-center">
+                  <p>Balance</p>
+                  <ion-badge color="danger">${{c.balance}}</ion-badge>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-item>
+          <div class="footer-list"></div>
+        </ion-list>
+      </div>
+    </swiper-slide>
+  </swiper-container>
 </ion-content>

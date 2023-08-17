@@ -18,9 +18,11 @@ import { provideStorage, getStorage } from '@angular/fire/storage';
 import { ServicesService } from 'src/services/services.service';
 import { SpinnerDialog } from '@awesome-cordova-plugins/spinner-dialog/ngx';
 import { FormsModule } from '@angular/forms';
+import { DetalleCorteComponent } from './components/detalle-corte/detalle-corte.component';
+import { DesgloseCorteComponent } from './components/desglose-corte/desglose-corte.component';
 
 @NgModule({
-  declarations: [AppComponent, DetallePagoComponent, NuevaRentaComponent, HistorialPagosComponent, NuevoGastoComponent],
+  declarations: [AppComponent, DetallePagoComponent, NuevaRentaComponent, HistorialPagosComponent, NuevoGastoComponent, DetalleCorteComponent, DesgloseCorteComponent],
   imports: [BrowserModule, FormsModule, IonicModule.forRoot(), AppRoutingModule, provideFirebaseApp(() => initializeApp(environment.firebase)), provideFirestore(() => getFirestore()), provideMessaging(() => getMessaging()), provideStorage(() => getStorage())],
   providers: [
     ServicesService,

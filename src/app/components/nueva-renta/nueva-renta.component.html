@@ -9,9 +9,9 @@
 
 <ion-content class="ion-padding">
 
-  <ion-item lines="none" class="ion-padding-top">
-    <ion-input type="tel" label="Teléfono cliente" labelPlacement="stacked" placeholder="Ingresar número de teléfono"
-      [counter]="true" maxlength="10" [(ngModel)]="celular"></ion-input>
+  <ion-item lines="none">
+    <ion-input type="tel" autofocus="true" label="Teléfono cliente" labelPlacement="stacked"
+      placeholder="Ingresar número de teléfono" [counter]="true" maxlength="10" [(ngModel)]="celular"></ion-input>
     <ion-button (click)="onBuscar()" slot="end" fill="clear">
       <ion-icon size="large" name="search-circle"></ion-icon>
     </ion-button>
